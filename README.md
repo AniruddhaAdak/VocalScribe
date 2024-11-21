@@ -134,4 +134,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 📧 [aniruddhaadak80@gmail.com](mailto:aniruddhaadak80@gmail.com)  
 📱 [+917029155691](tel:+917029155691)  
 
-Project Link: [https://github.com/yourusername/vocalscribe](https://github.com/yourusername/vocalscribe)
+Project Link: [https://github.com/yourusername/vocalscribe](https://github.com/AniruddhaAdak/vocalscribe)
