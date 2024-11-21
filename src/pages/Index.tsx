@@ -1,11 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { toast } from "@/components/ui/use-toast";
-import AudioWaveform from "@/components/AudioWaveform";
 import TranscriptDisplay from "@/components/TranscriptDisplay";
-import ProcessingProgress from "@/components/ProcessingProgress";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import FileUpload from "@/components/FileUpload";
 import { processAudioFile, checkTranscriptionStatus } from "@/utils/audioProcessor";
+import RecordingInterface from "@/components/RecordingInterface";
 
 const ASSEMBLY_AI_API_KEY = "5b1fd20849da4dd3b981ca0f1a175209";
 
@@ -34,7 +32,6 @@ const Index = () => {
   const uploadAudioToAssemblyAI = async (audioBlob: Blob) => {
     try {
       setProcessingProgress(25);
-      // Convert blob to File object
       const file = new File([audioBlob], "recording.webm", { type: "audio/webm" });
       const transcriptId = await processAudioFile(file, ASSEMBLY_AI_API_KEY);
       
@@ -180,37 +177,13 @@ const Index = () => {
           <p className="text-lg text-muted-foreground">Real-time audio transcription made beautiful</p>
         </div>
 
-        <div className="bg-card/80 backdrop-blur-sm rounded-xl shadow-lg p-6 mb-8 animate-scale-in">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {isRecording && <AudioWaveform />}
-            <FileUpload onFileSelected={handleFileUpload} />
-          </div>
-          
-          {processingProgress > 0 && processingProgress < 100 && (
-            <div className="my-4 animate-fade-in">
-              <ProcessingProgress progress={processingProgress} />
-            </div>
-          )}
-          
-          <div className="flex justify-center mt-4">
-            <button
-              onClick={toggleRecording}
-              className={`${
-                isRecording
-                  ? "bg-destructive hover:bg-destructive/90"
-                  : "bg-primary hover:bg-primary/90"
-              } text-white font-semibold py-2 px-6 rounded-full transition-all duration-200 animate-scale-in`}
-            >
-              {isRecording ? "Stop Recording" : "Start Recording"}
-            </button>
-          </div>
-
-          {hasPermission === false && (
-            <div className="mt-4 text-center text-destructive animate-fade-in">
-              Please enable microphone access in your browser settings to use this feature.
-            </div>
-          )}
-        </div>
+        <RecordingInterface 
+          isRecording={isRecording}
+          processingProgress={processingProgress}
+          onToggleRecording={toggleRecording}
+          onFileSelected={handleFileUpload}
+          hasPermission={hasPermission}
+        />
 
         <div className="animate-fade-in">
           <TranscriptDisplay lines={transcript} />
