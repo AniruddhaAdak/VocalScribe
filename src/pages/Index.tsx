@@ -167,14 +167,18 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background transition-colors duration-300 animate-fade-in relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 transition-colors duration-300 animate-fade-in relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 animate-gradient" />
       
       <ThemeToggle />
-      <div className="max-w-4xl mx-auto relative z-10">
+      <div className="max-w-4xl mx-auto relative z-10 min-h-screen flex flex-col">
         <div className="text-center mb-8 animate-slide-in-right">
-          <h1 className="text-4xl font-bold text-foreground mb-2">LiveTranscript+</h1>
-          <p className="text-lg text-muted-foreground">Real-time audio transcription made beautiful</p>
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 text-transparent bg-clip-text mb-2 font-['Righteous']">
+            LiveTranscript+
+          </h1>
+          <p className="text-lg text-muted-foreground font-['Quicksand']">
+            Real-time audio transcription made beautiful
+          </p>
         </div>
 
         <RecordingInterface 
@@ -185,9 +189,13 @@ const Index = () => {
           hasPermission={hasPermission}
         />
 
-        <div className="animate-fade-in">
+        <div className="flex-grow animate-fade-in mb-16">
           <TranscriptDisplay lines={transcript} />
         </div>
+
+        <footer className="w-full py-4 text-center text-sm text-gray-600 font-['Space_Grotesk'] animate-fade-in mt-auto">
+          <p>© {new Date().getFullYear()} LiveTranscript+. All rights reserved.</p>
+        </footer>
       </div>
     </div>
   );

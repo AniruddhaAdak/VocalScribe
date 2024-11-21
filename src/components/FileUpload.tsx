@@ -53,9 +53,10 @@ const FileUpload = ({ onFileSelected }: FileUploadProps) => {
       onDrop={handleDrop}
       className={`
         relative border-2 border-dashed rounded-lg p-6 
-        transition-all duration-300 animate-fade-in
-        ${isDragging ? "border-primary bg-primary/10" : "border-muted"}
+        transition-all duration-300 animate-scale-in
+        ${isDragging ? 'border-primary bg-primary/10' : 'border-primary/20'}
         hover:border-primary hover:bg-primary/5
+        bg-white/50 backdrop-blur-sm
       `}
     >
       <input
@@ -64,9 +65,9 @@ const FileUpload = ({ onFileSelected }: FileUploadProps) => {
         onChange={handleFileInput}
         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
       />
-      <div className="flex flex-col items-center gap-2 text-muted-foreground">
-        <Upload className="w-8 h-8" />
-        <p className="text-sm">Drag and drop an MP3 file or click to browse</p>
+      <div className="flex flex-col items-center gap-2 text-primary/80">
+        <Upload className="w-8 h-8 animate-bounce" />
+        <p className="text-sm font-['Poppins']">Drag and drop an MP3 file or click to browse</p>
       </div>
     </div>
   );
