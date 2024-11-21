@@ -3,7 +3,7 @@
 
 **VocalScribe** is a modern web application that provides real-time audio transcription with a beautiful and interactive user interface. Built with **React**, **TypeScript**, and **Tailwind CSS**, it offers a seamless experience for converting speech to text. Whether you want to upload an **.mp3** file or speak directly into the app, **VocalScribe** makes transcribing your words easy and engaging.
 
-![VocalScribe Preview](public/og-image.svg)
+![VocalScribe Preview](public/VocalScribe.png)
 
 ---
 
