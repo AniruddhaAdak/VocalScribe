@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import AudioWaveform from "@/components/AudioWaveform";
@@ -10,6 +10,9 @@ const Index = () => {
   const [transcript, setTranscript] = useState([
     { timestamp: "0:00", text: "Click the button to start recording..." },
   ]);
+  
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   useEffect(() => {
     // Check for existing permissions when component mounts
@@ -27,6 +30,38 @@ const Index = () => {
     try {
       if (!isRecording) {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        streamRef.current = stream;
+        
+        const mediaRecorder = new MediaRecorder(stream);
+        mediaRecorderRef.current = mediaRecorder;
+        
+        let chunks: Blob[] = [];
+        
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) {
+            chunks.push(e.data);
+          }
+        };
+
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(chunks, { type: 'audio/webm' });
+          chunks = [];
+          
+          // Here you would normally send this blob to a speech-to-text service
+          // For now, we'll simulate a response
+          const currentTime = new Date();
+          const timestamp = currentTime.toLocaleTimeString([], { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+          });
+          
+          setTranscript(prev => [...prev, {
+            timestamp,
+            text: "This is a sample transcription. In a real application, this would be the actual transcribed text from your audio.",
+          }]);
+        };
+
+        mediaRecorder.start(1000); // Collect data every second
         setHasPermission(true);
         setIsRecording(true);
         toast({
@@ -34,6 +69,12 @@ const Index = () => {
           description: "Your audio is now being transcribed in real-time.",
         });
       } else {
+        if (mediaRecorderRef.current) {
+          mediaRecorderRef.current.stop();
+          if (streamRef.current) {
+            streamRef.current.getTracks().forEach(track => track.stop());
+          }
+        }
         setIsRecording(false);
         toast({
           title: "Recording stopped",
