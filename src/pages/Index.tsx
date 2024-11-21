@@ -4,6 +4,8 @@ import { toast } from "@/components/ui/use-toast";
 import AudioWaveform from "@/components/AudioWaveform";
 import TranscriptDisplay from "@/components/TranscriptDisplay";
 
+const ASSEMBLY_AI_API_KEY = "5b1fd20849da4dd3b981ca0f1a175209";
+
 const Index = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -26,6 +28,91 @@ const Index = () => {
       });
   }, []);
 
+  const uploadAudioToAssemblyAI = async (audioBlob: Blob) => {
+    try {
+      // First, upload the audio file to AssemblyAI
+      const uploadResponse = await fetch('https://api.assemblyai.com/v2/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': ASSEMBLY_AI_API_KEY,
+        },
+        body: audioBlob,
+      });
+
+      const uploadData = await uploadResponse.json();
+      const audioUrl = uploadData.upload_url;
+
+      // Then, submit the transcription request
+      const transcriptResponse = await fetch('https://api.assemblyai.com/v2/transcript', {
+        method: 'POST',
+        headers: {
+          'Authorization': ASSEMBLY_AI_API_KEY,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          audio_url: audioUrl,
+        }),
+      });
+
+      const transcriptData = await transcriptResponse.json();
+      const transcriptId = transcriptData.id;
+
+      // Poll for the transcription result
+      let result = await checkTranscriptionStatus(transcriptId);
+      
+      if (result.status === 'completed') {
+        const currentTime = new Date();
+        const timestamp = currentTime.toLocaleTimeString([], { 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        });
+        
+        setTranscript(prev => [...prev, {
+          timestamp,
+          text: result.text,
+        }]);
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Transcription failed",
+          description: "Failed to transcribe the audio. Please try again.",
+        });
+      }
+    } catch (error) {
+      console.error('Error during transcription:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to process the audio. Please try again.",
+      });
+    }
+  };
+
+  const checkTranscriptionStatus = async (transcriptId: string) => {
+    let attempts = 0;
+    const maxAttempts = 30; // Maximum number of polling attempts
+    
+    while (attempts < maxAttempts) {
+      const response = await fetch(`https://api.assemblyai.com/v2/transcript/${transcriptId}`, {
+        headers: {
+          'Authorization': ASSEMBLY_AI_API_KEY,
+        },
+      });
+      
+      const result = await response.json();
+      
+      if (result.status === 'completed' || result.status === 'error') {
+        return result;
+      }
+      
+      // Wait for 1 second before next polling attempt
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      attempts++;
+    }
+    
+    throw new Error('Transcription timed out');
+  };
+
   const toggleRecording = async () => {
     try {
       if (!isRecording) {
@@ -43,22 +130,16 @@ const Index = () => {
           }
         };
 
-        mediaRecorder.onstop = () => {
+        mediaRecorder.onstop = async () => {
           const blob = new Blob(chunks, { type: 'audio/webm' });
           chunks = [];
           
-          // Here you would normally send this blob to a speech-to-text service
-          // For now, we'll simulate a response
-          const currentTime = new Date();
-          const timestamp = currentTime.toLocaleTimeString([], { 
-            hour: '2-digit', 
-            minute: '2-digit' 
+          toast({
+            title: "Processing audio",
+            description: "Your audio is being transcribed...",
           });
           
-          setTranscript(prev => [...prev, {
-            timestamp,
-            text: "This is a sample transcription. In a real application, this would be the actual transcribed text from your audio.",
-          }]);
+          await uploadAudioToAssemblyAI(blob);
         };
 
         mediaRecorder.start(1000); // Collect data every second
@@ -66,7 +147,7 @@ const Index = () => {
         setIsRecording(true);
         toast({
           title: "Recording started",
-          description: "Your audio is now being transcribed in real-time.",
+          description: "Your audio is now being recorded.",
         });
       } else {
         if (mediaRecorderRef.current) {
@@ -76,10 +157,6 @@ const Index = () => {
           }
         }
         setIsRecording(false);
-        toast({
-          title: "Recording stopped",
-          description: "Your transcript is ready.",
-        });
       }
     } catch (err) {
       console.error("Error accessing microphone:", err);
