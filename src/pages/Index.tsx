@@ -194,10 +194,10 @@ const Index = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 min-h-screen flex flex-col">
         <div className="text-center py-8 sm:py-12 animate-slide-in-right">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 text-transparent bg-clip-text mb-2 font-['Righteous']">
-            LiveTranscript+
+            🎙️VocalScribe 🔊
           </h1>
           <p className="text-base sm:text-lg text-muted-foreground font-['Quicksand']">
-            Real-time audio transcription made beautiful
+          🎉 Where Your Voice Becomes Words: Transforming Speech into Seamless Text, Instantly.
           </p>
         </div>
 
@@ -220,7 +220,7 @@ const Index = () => {
         </div>
 
         <footer className="w-full py-4 text-center text-sm text-gray-600 dark:text-gray-400 font-['Space_Grotesk'] animate-fade-in mt-auto">
-          <p>© {new Date().getFullYear()} LiveTranscript+. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} VocalScribe , made with ♥️. All rights reserved.</p>
         </footer>
       </div>
     </div>
