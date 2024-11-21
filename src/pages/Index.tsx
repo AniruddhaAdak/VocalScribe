@@ -4,6 +4,8 @@ import TranscriptDisplay from "@/components/TranscriptDisplay";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { processAudioFile, checkTranscriptionStatus } from "@/utils/audioProcessor";
 import RecordingInterface from "@/components/RecordingInterface";
+import TranscriptActions from "@/components/TranscriptActions";
+import Comments from "@/components/Comments";
 
 const ASSEMBLY_AI_API_KEY = "5b1fd20849da4dd3b981ca0f1a175209";
 
@@ -28,6 +30,22 @@ const Index = () => {
         console.error("Initial permission check failed:", err);
       });
   }, []);
+
+  const handleEdit = () => {
+    // Add edit functionality here
+    toast({
+      title: "Edit mode",
+      description: "Editing functionality coming soon!",
+    });
+  };
+
+  const handleDelete = () => {
+    setTranscript([{ timestamp: "0:00", text: "Click the button to start recording..." }]);
+    toast({
+      title: "Transcript deleted",
+      description: "The transcript has been cleared.",
+    });
+  };
 
   const uploadAudioToAssemblyAI = async (audioBlob: Blob) => {
     try {
@@ -167,7 +185,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 transition-colors duration-300 animate-fade-in relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 animate-fade-in relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 animate-gradient" />
       
       <ThemeToggle />
@@ -189,11 +207,17 @@ const Index = () => {
           hasPermission={hasPermission}
         />
 
-        <div className="flex-grow animate-fade-in mb-16">
+        <div className="flex-grow animate-fade-in mb-8">
           <TranscriptDisplay lines={transcript} />
+          <TranscriptActions 
+            transcript={transcript}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+          <Comments />
         </div>
 
-        <footer className="w-full py-4 text-center text-sm text-gray-600 font-['Space_Grotesk'] animate-fade-in mt-auto">
+        <footer className="w-full py-4 text-center text-sm text-gray-600 dark:text-gray-400 font-['Space_Grotesk'] animate-fade-in mt-auto">
           <p>© {new Date().getFullYear()} LiveTranscript+. All rights reserved.</p>
         </footer>
       </div>

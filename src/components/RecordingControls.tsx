@@ -18,7 +18,7 @@ const RecordingControls = ({ isRecording, onToggleRecording }: RecordingControls
           text-white font-['Quicksand'] font-semibold py-2 px-6 
           rounded-full transition-all duration-300 
           animate-scale-in hover:scale-105 
-          shadow-lg hover:shadow-xl
+          shadow-lg hover:shadow-xl animate-glow
         `}
       >
         {isRecording ? "Stop Recording" : "Start Recording"}

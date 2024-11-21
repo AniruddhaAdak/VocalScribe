@@ -56,6 +56,19 @@ export default {
             "background-position": "right center",
           },
         },
+        glow: {
+          "0%, 100%": {
+            "box-shadow": "0 0 15px rgba(124, 58, 237, 0.5)",
+          },
+          "50%": {
+            "box-shadow": "0 0 30px rgba(124, 58, 237, 0.8)",
+          },
+        },
+        shake: {
+          "0%, 100%": { transform: "translateX(0)" },
+          "25%": { transform: "translateX(-5px)" },
+          "75%": { transform: "translateX(5px)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -64,6 +77,8 @@ export default {
         "slide-in-right": "slide-in-right 0.5s ease-out",
         "scale-in": "scale-in 0.3s ease-out",
         "gradient": "gradient 15s ease infinite",
+        "glow": "glow 2s ease-in-out infinite",
+        "shake": "shake 0.5s ease-in-out",
       },
     },
   },
