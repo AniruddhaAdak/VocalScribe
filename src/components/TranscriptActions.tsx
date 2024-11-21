@@ -1,4 +1,4 @@
-import { Copy, Download, Share2, Edit2, Trash2 } from "lucide-react";
+import { Copy, Download, Share2, Edit2, Trash2, Facebook, Instagram, Twitter, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import {
@@ -45,6 +45,10 @@ const TranscriptActions = ({ transcript, onEdit, onDelete }: TranscriptActionsPr
       twitter: `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
       linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
       facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+      instagram: `https://www.instagram.com/share?url=${url}`,
+      thread: `https://threads.net/share?url=${url}`,
+      devto: `https://dev.to/new?prefill=- ${text} ${url}`,
+      propeers: `https://propeers.com/share?url=${url}&text=${text}`,
     };
 
     window.open(shareUrls[platform as keyof typeof shareUrls], '_blank');
@@ -81,14 +85,47 @@ const TranscriptActions = ({ transcript, onEdit, onDelete }: TranscriptActionsPr
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem onClick={() => shareToSocial('twitter')}>
+          <DropdownMenuItem 
+            onClick={() => shareToSocial('facebook')}
+            className="cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900"
+          >
+            <Facebook className="w-4 h-4 mr-2 text-blue-600" />
+            Facebook
+          </DropdownMenuItem>
+          <DropdownMenuItem 
+            onClick={() => shareToSocial('twitter')}
+            className="cursor-pointer hover:bg-sky-100 dark:hover:bg-sky-900"
+          >
+            <Twitter className="w-4 h-4 mr-2 text-sky-500" />
             Twitter
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => shareToSocial('linkedin')}>
-            LinkedIn
+          <DropdownMenuItem 
+            onClick={() => shareToSocial('instagram')}
+            className="cursor-pointer hover:bg-pink-100 dark:hover:bg-pink-900"
+          >
+            <Instagram className="w-4 h-4 mr-2 text-pink-600" />
+            Instagram
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => shareToSocial('facebook')}>
-            Facebook
+          <DropdownMenuItem 
+            onClick={() => shareToSocial('thread')}
+            className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900"
+          >
+            <span className="mr-2">🧵</span>
+            Threads
+          </DropdownMenuItem>
+          <DropdownMenuItem 
+            onClick={() => shareToSocial('devto')}
+            className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900"
+          >
+            <Github className="w-4 h-4 mr-2 text-black dark:text-white" />
+            Dev.to
+          </DropdownMenuItem>
+          <DropdownMenuItem 
+            onClick={() => shareToSocial('propeers')}
+            className="cursor-pointer hover:bg-violet-100 dark:hover:bg-violet-900"
+          >
+            <span className="mr-2">👥</span>
+            Propeers
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
