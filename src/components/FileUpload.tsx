@@ -47,27 +47,31 @@ const FileUpload = ({ onFileSelected }: FileUploadProps) => {
   };
 
   return (
-    <div
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
-      className={`
-        relative border-2 border-dashed rounded-lg p-6 
-        transition-all duration-300 animate-scale-in
-        ${isDragging ? 'border-primary bg-primary/10' : 'border-primary/20'}
-        hover:border-primary hover:bg-primary/5
-        bg-white/50 backdrop-blur-sm
-      `}
-    >
-      <input
-        type="file"
-        accept="audio/mpeg"
-        onChange={handleFileInput}
-        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-      />
-      <div className="flex flex-col items-center gap-2 text-primary/80">
-        <Upload className="w-8 h-8 animate-bounce" />
-        <p className="text-sm font-['Poppins']">Drag and drop an MP3 file or click to browse</p>
+    <div className="w-full max-w-3xl mx-auto">
+      <div
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        className={`
+          relative border-2 border-dashed rounded-lg p-12
+          transition-all duration-300 animate-scale-in
+          ${isDragging ? 'border-primary bg-primary/10' : 'border-primary/20'}
+          hover:border-primary hover:bg-primary/5
+          bg-white/50 backdrop-blur-sm
+          dark:bg-gray-800/50 dark:border-primary/30
+          min-h-[200px] flex items-center justify-center
+        `}
+      >
+        <input
+          type="file"
+          accept="audio/mpeg"
+          onChange={handleFileInput}
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+        />
+        <div className="flex flex-col items-center gap-4 text-primary/80">
+          <Upload className="w-12 h-12 animate-bounce" />
+          <p className="text-lg font-['Poppins']">Drag and drop an MP3 file or click to browse</p>
+        </div>
       </div>
     </div>
   );
