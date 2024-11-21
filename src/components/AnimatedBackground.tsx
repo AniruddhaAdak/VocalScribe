@@ -27,10 +27,10 @@ const AnimatedBackground = () => {
     id,
     x: Math.random() * 100,
     y: Math.random() * 100,
-    size: 8 + Math.random() * 24, // Vary sizes between 8vmin and 32vmin
+    size: 8 + Math.random() * 24,
     color: colors[Math.floor(Math.random() * colors.length)],
-    pulseSpeed: 2 + Math.random() * 4, // Pulse speed between 2s and 6s
-    rotateSpeed: 10 + Math.random() * 20, // Rotate speed between 10s and 30s
+    pulseSpeed: 2 + Math.random() * 4,
+    rotateSpeed: 10 + Math.random() * 20,
   }), [colors]);
 
   useEffect(() => {
@@ -77,20 +77,22 @@ const AnimatedBackground = () => {
           }}
         />
       ))}
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0) rotate(0deg); }
-          50% { transform: translateY(-20px) rotate(180deg); }
-        }
-        @keyframes pulse {
-          0% { transform: scale(1); opacity: 0.15; }
-          100% { transform: scale(1.1); opacity: 0.25; }
-        }
-        @keyframes rotate {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
+      <style>
+        {`
+          @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+          }
+          @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.15; }
+            100% { transform: scale(1.1); opacity: 0.25; }
+          }
+          @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+      </style>
     </div>
   );
 };
