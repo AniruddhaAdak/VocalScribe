@@ -31,6 +31,48 @@ const Index = () => {
       });
   }, []);
 
+  const uploadAudioToAssemblyAI = async (audioBlob: Blob) => {
+    try {
+      setProcessingProgress(25);
+      // Convert blob to File object
+      const file = new File([audioBlob], "recording.webm", { type: "audio/webm" });
+      const transcriptId = await processAudioFile(file, ASSEMBLY_AI_API_KEY);
+      
+      setProcessingProgress(50);
+      let result = await checkTranscriptionStatus(transcriptId, ASSEMBLY_AI_API_KEY);
+      
+      while (result.status === 'processing') {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        result = await checkTranscriptionStatus(transcriptId, ASSEMBLY_AI_API_KEY);
+      }
+      
+      if (result.status === 'completed' && result.text) {
+        setProcessingProgress(100);
+        const currentTime = new Date().toLocaleTimeString([], { 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        });
+        
+        setTranscript(prev => [...prev, {
+          timestamp: currentTime,
+          text: result.text,
+        }]);
+
+        toast({
+          title: "Transcription complete",
+          description: "Your audio has been successfully transcribed.",
+        });
+      }
+    } catch (error) {
+      setProcessingProgress(0);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to process the audio. Please try again.",
+      });
+    }
+  };
+
   const handleFileUpload = async (file: File) => {
     try {
       setProcessingProgress(25);
