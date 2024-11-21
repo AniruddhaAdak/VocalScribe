@@ -191,12 +191,12 @@ const Index = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 animate-gradient" />
       
       <ThemeToggle />
-      <div className="max-w-4xl mx-auto relative z-10 min-h-screen flex flex-col">
-        <div className="text-center mb-8 animate-slide-in-right">
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 text-transparent bg-clip-text mb-2 font-['Righteous']">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 min-h-screen flex flex-col">
+        <div className="text-center py-8 sm:py-12 animate-slide-in-right">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 text-transparent bg-clip-text mb-2 font-['Righteous']">
             LiveTranscript+
           </h1>
-          <p className="text-lg text-muted-foreground font-['Quicksand']">
+          <p className="text-base sm:text-lg text-muted-foreground font-['Quicksand']">
             Real-time audio transcription made beautiful
           </p>
         </div>
