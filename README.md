@@ -51,7 +51,7 @@
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/vocalscribe.git
+   git clone https://github.com/AniruddhaAdak/vocalscribe.git
    cd vocalscribe
    ```
 
