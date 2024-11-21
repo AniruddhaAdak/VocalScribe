@@ -13,9 +13,19 @@ const ProcessingProgress = ({ progress }: ProcessingProgressProps) => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-2">
-      <Progress value={progress} className={`h-2 ${getProgressColor(progress)}`} />
-      <p className="text-sm text-center text-muted-foreground">{progress}% Complete</p>
+    <div className="w-full max-w-xl mx-auto space-y-4 p-6 animate-fade-in">
+      <Progress 
+        value={progress} 
+        className={`h-4 transition-all duration-500 ${getProgressColor(progress)}`} 
+      />
+      <div className="flex justify-between items-center animate-scale-in">
+        <p className="text-lg font-medium text-foreground dark:text-foreground/90">
+          Processing Audio
+        </p>
+        <span className="text-xl font-bold text-primary">
+          {progress}%
+        </span>
+      </div>
     </div>
   );
 };

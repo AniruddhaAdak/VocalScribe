@@ -83,6 +83,10 @@ export default {
           "50%": { transform: "scaleY(0.5)" },
           "100%": { transform: "scaleY(1)" },
         },
+        "progress-pulse": {
+          "0%, 100%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.05)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -91,6 +95,7 @@ export default {
         "slide-in-right": "slide-in-right 0.5s ease-out",
         "scale-in": "scale-in 0.3s ease-out",
         "wave": "wave 1s ease-in-out infinite",
+        "progress-pulse": "progress-pulse 2s ease-in-out infinite",
       },
     },
   },
