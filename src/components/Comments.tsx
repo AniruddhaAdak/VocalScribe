@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { MessageSquare, Edit2, Trash2, Reply, Heart } from "lucide-react";
+import { CommentItem } from './CommentItem';
 
 interface Comment {
   id: string;
@@ -9,15 +10,12 @@ interface Comment {
   replies: Comment[];
   likes: number;
   isLiked: boolean;
+  level?: number;
 }
 
 const Comments = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editText, setEditText] = useState('');
-  const [replyingTo, setReplyingTo] = useState<string | null>(null);
-  const [replyText, setReplyText] = useState('');
   const [inputColor, setInputColor] = useState('border-blue-500');
 
   useEffect(() => {
@@ -50,61 +48,10 @@ const Comments = () => {
       replies: [],
       likes: 0,
       isLiked: false,
+      level: 0,
     };
     setComments([...comments, comment]);
     setNewComment('');
-  };
-
-  const toggleLike = (commentId: string) => {
-    setComments(comments.map(c => {
-      if (c.id === commentId) {
-        return {
-          ...c,
-          likes: c.isLiked ? c.likes - 1 : c.likes + 1,
-          isLiked: !c.isLiked,
-        };
-      }
-      return c;
-    }));
-  };
-
-  const editComment = (commentId: string) => {
-    const updatedComments = comments.map(c => {
-      if (c.id === commentId) {
-        return { ...c, text: editText };
-      }
-      return c;
-    });
-    setComments(updatedComments);
-    setEditingId(null);
-    setEditText('');
-  };
-
-  const deleteComment = (commentId: string) => {
-    setComments(comments.filter(c => c.id !== commentId));
-  };
-
-  const addReply = (parentId: string) => {
-    if (!replyText.trim()) return;
-    const updatedComments = comments.map(c => {
-      if (c.id === parentId) {
-        return {
-          ...c,
-          replies: [...c.replies, {
-            id: Date.now().toString(),
-            text: replyText,
-            author: 'User',
-            replies: [],
-            likes: 0,
-            isLiked: false,
-          }],
-        };
-      }
-      return c;
-    });
-    setComments(updatedComments);
-    setReplyingTo(null);
-    setReplyText('');
   };
 
   return (
@@ -125,70 +72,12 @@ const Comments = () => {
 
       <div className="space-y-4">
         {comments.map(comment => (
-          <div key={comment.id} className="p-4 rounded-lg bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm shadow-sm">
-            <p className="text-foreground dark:text-white">{comment.text}</p>
-            <div className="flex gap-2 mt-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => toggleLike(comment.id)}
-                className={comment.isLiked ? 'text-red-500' : ''}
-              >
-                <Heart className={`w-4 h-4 mr-1 ${comment.isLiked ? 'fill-red-500' : ''}`} />
-                {comment.likes}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setEditingId(comment.id);
-                  setEditText(comment.text);
-                }}
-              >
-                <Edit2 className="w-4 h-4 mr-1" />
-                Edit
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setReplyingTo(comment.id)}
-              >
-                <Reply className="w-4 h-4 mr-1" />
-                Reply
-              </Button>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => deleteComment(comment.id)}
-              >
-                <Trash2 className="w-4 h-4 mr-1" />
-                Delete
-              </Button>
-            </div>
-
-            {replyingTo === comment.id && (
-              <div className="flex gap-2 mt-2">
-                <input
-                  type="text"
-                  value={replyText}
-                  onChange={(e) => setReplyText(e.target.value)}
-                  placeholder="Write a reply..."
-                  className="flex-1 p-2 rounded border"
-                />
-                <Button onClick={() => addReply(comment.id)}>Reply</Button>
-              </div>
-            )}
-            
-            {comment.replies.length > 0 && (
-              <div className="ml-8 mt-4 space-y-4">
-                {comment.replies.map(reply => (
-                  <div key={reply.id} className="p-3 rounded-lg bg-white/30 dark:bg-gray-800/30 backdrop-blur-sm">
-                    <p className="text-foreground dark:text-white">{reply.text}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <CommentItem
+            key={comment.id}
+            comment={comment}
+            setComments={setComments}
+            allComments={comments}
+          />
         ))}
       </div>
     </div>
