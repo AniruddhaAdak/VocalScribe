@@ -6,6 +6,7 @@ import { processAudioFile, checkTranscriptionStatus } from "@/utils/audioProcess
 import RecordingInterface from "@/components/RecordingInterface";
 import TranscriptActions from "@/components/TranscriptActions";
 import Comments from "@/components/Comments";
+import AnimatedBackground from "@/components/AnimatedBackground";
 
 const ASSEMBLY_AI_API_KEY = "5b1fd20849da4dd3b981ca0f1a175209";
 
@@ -186,6 +187,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 animate-fade-in relative overflow-hidden">
+      <AnimatedBackground />
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 animate-gradient" />
       
       <ThemeToggle />

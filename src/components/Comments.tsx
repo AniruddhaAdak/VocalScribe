@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Edit2, Trash2, Reply } from "lucide-react";
+import { MessageSquare, Edit2, Trash2, Reply, Heart } from "lucide-react";
 
 interface Comment {
   id: string;
   text: string;
   author: string;
   replies: Comment[];
+  likes: number;
+  isLiked: boolean;
 }
 
 const Comments = () => {
@@ -46,9 +48,24 @@ const Comments = () => {
       text: newComment,
       author: 'User',
       replies: [],
+      likes: 0,
+      isLiked: false,
     };
     setComments([...comments, comment]);
     setNewComment('');
+  };
+
+  const toggleLike = (commentId: string) => {
+    setComments(comments.map(c => {
+      if (c.id === commentId) {
+        return {
+          ...c,
+          likes: c.isLiked ? c.likes - 1 : c.likes + 1,
+          isLiked: !c.isLiked,
+        };
+      }
+      return c;
+    }));
   };
 
   const editComment = (commentId: string) => {
@@ -78,6 +95,8 @@ const Comments = () => {
             text: replyText,
             author: 'User',
             replies: [],
+            likes: 0,
+            isLiked: false,
           }],
         };
       }
@@ -96,9 +115,9 @@ const Comments = () => {
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           placeholder="Add a comment..."
-          className={`flex-1 p-2 rounded border-2 ${inputColor} focus:outline-none focus:ring-2 focus:ring-primary transition-colors duration-300`}
+          className={`flex-1 p-2 rounded border-2 ${inputColor} focus:outline-none focus:ring-2 focus:ring-primary transition-colors duration-300 bg-white/90 dark:bg-gray-800/90 text-foreground dark:text-white`}
         />
-        <Button onClick={addComment} className="hover:scale-105 transition-transform">
+        <Button onClick={addComment} className="hover:scale-105 transition-transform cursor-action">
           <MessageSquare className="w-4 h-4 mr-2" />
           Comment
         </Button>
@@ -106,51 +125,46 @@ const Comments = () => {
 
       <div className="space-y-4">
         {comments.map(comment => (
-          <div key={comment.id} className="p-4 rounded-lg bg-white/50 backdrop-blur-sm shadow-sm">
-            {editingId === comment.id ? (
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={editText}
-                  onChange={(e) => setEditText(e.target.value)}
-                  className="flex-1 p-2 rounded border"
-                />
-                <Button onClick={() => editComment(comment.id)}>Save</Button>
-              </div>
-            ) : (
-              <>
-                <p>{comment.text}</p>
-                <div className="flex gap-2 mt-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setEditingId(comment.id);
-                      setEditText(comment.text);
-                    }}
-                  >
-                    <Edit2 className="w-4 h-4 mr-1" />
-                    Edit
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setReplyingTo(comment.id)}
-                  >
-                    <Reply className="w-4 h-4 mr-1" />
-                    Reply
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => deleteComment(comment.id)}
-                  >
-                    <Trash2 className="w-4 h-4 mr-1" />
-                    Delete
-                  </Button>
-                </div>
-              </>
-            )}
+          <div key={comment.id} className="p-4 rounded-lg bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm shadow-sm">
+            <p className="text-foreground dark:text-white">{comment.text}</p>
+            <div className="flex gap-2 mt-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => toggleLike(comment.id)}
+                className={comment.isLiked ? 'text-red-500' : ''}
+              >
+                <Heart className={`w-4 h-4 mr-1 ${comment.isLiked ? 'fill-red-500' : ''}`} />
+                {comment.likes}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setEditingId(comment.id);
+                  setEditText(comment.text);
+                }}
+              >
+                <Edit2 className="w-4 h-4 mr-1" />
+                Edit
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setReplyingTo(comment.id)}
+              >
+                <Reply className="w-4 h-4 mr-1" />
+                Reply
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => deleteComment(comment.id)}
+              >
+                <Trash2 className="w-4 h-4 mr-1" />
+                Delete
+              </Button>
+            </div>
 
             {replyingTo === comment.id && (
               <div className="flex gap-2 mt-2">
@@ -164,12 +178,12 @@ const Comments = () => {
                 <Button onClick={() => addReply(comment.id)}>Reply</Button>
               </div>
             )}
-
+            
             {comment.replies.length > 0 && (
               <div className="ml-8 mt-4 space-y-4">
                 {comment.replies.map(reply => (
-                  <div key={reply.id} className="p-3 rounded-lg bg-white/30 backdrop-blur-sm">
-                    <p>{reply.text}</p>
+                  <div key={reply.id} className="p-3 rounded-lg bg-white/30 dark:bg-gray-800/30 backdrop-blur-sm">
+                    <p className="text-foreground dark:text-white">{reply.text}</p>
                   </div>
                 ))}
               </div>

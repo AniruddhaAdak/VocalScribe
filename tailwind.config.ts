@@ -25,6 +25,7 @@ export default {
           foreground: "#1A1A1A",
         },
       },
+      
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -69,6 +70,10 @@ export default {
           "25%": { transform: "translateX(-5px)" },
           "75%": { transform: "translateX(5px)" },
         },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-20px)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -79,6 +84,12 @@ export default {
         "gradient": "gradient 15s ease infinite",
         "glow": "glow 2s ease-in-out infinite",
         "shake": "shake 0.5s ease-in-out",
+        "float": "float 3s ease-in-out infinite",
+      },
+      cursor: {
+        'text-edit': 'text',
+        'action': 'pointer',
+        'record': 'crosshair',
       },
     },
   },
