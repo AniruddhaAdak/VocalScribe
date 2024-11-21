@@ -4,6 +4,8 @@ import AudioWaveform from "@/components/AudioWaveform";
 import TranscriptDisplay from "@/components/TranscriptDisplay";
 import ProcessingProgress from "@/components/ProcessingProgress";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import FileUpload from "@/components/FileUpload";
+import { processAudioFile, checkTranscriptionStatus } from "@/utils/audioProcessor";
 
 const ASSEMBLY_AI_API_KEY = "5b1fd20849da4dd3b981ca0f1a175209";
 
@@ -19,7 +21,6 @@ const Index = () => {
   const streamRef = useRef<MediaStream | null>(null);
 
   useEffect(() => {
-    // Check for existing permissions when component mounts
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then(() => {
         setHasPermission(true);
@@ -30,92 +31,44 @@ const Index = () => {
       });
   }, []);
 
-  const uploadAudioToAssemblyAI = async (audioBlob: Blob) => {
+  const handleFileUpload = async (file: File) => {
     try {
       setProcessingProgress(25);
-      const uploadResponse = await fetch('https://api.assemblyai.com/v2/upload', {
-        method: 'POST',
-        headers: {
-          'Authorization': ASSEMBLY_AI_API_KEY,
-        },
-        body: audioBlob,
-      });
-
-      setProcessingProgress(50);
-      const uploadData = await uploadResponse.json();
-      const audioUrl = uploadData.upload_url;
-
-      const transcriptResponse = await fetch('https://api.assemblyai.com/v2/transcript', {
-        method: 'POST',
-        headers: {
-          'Authorization': ASSEMBLY_AI_API_KEY,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          audio_url: audioUrl,
-        }),
-      });
-
-      setProcessingProgress(75);
-      const transcriptData = await transcriptResponse.json();
-      const transcriptId = transcriptData.id;
-
-      let result = await checkTranscriptionStatus(transcriptId);
+      const transcriptId = await processAudioFile(file, ASSEMBLY_AI_API_KEY);
       
-      if (result.status === 'completed') {
+      setProcessingProgress(50);
+      let result = await checkTranscriptionStatus(transcriptId, ASSEMBLY_AI_API_KEY);
+      
+      while (result.status === 'processing') {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        result = await checkTranscriptionStatus(transcriptId, ASSEMBLY_AI_API_KEY);
+      }
+      
+      if (result.status === 'completed' && result.text) {
         setProcessingProgress(100);
-        const currentTime = new Date();
-        const timestamp = currentTime.toLocaleTimeString([], { 
+        const currentTime = new Date().toLocaleTimeString([], { 
           hour: '2-digit', 
           minute: '2-digit' 
         });
         
         setTranscript(prev => [...prev, {
-          timestamp,
+          timestamp: currentTime,
           text: result.text,
         }]);
-      } else {
-        setProcessingProgress(0);
+
         toast({
-          variant: "destructive",
-          title: "Transcription failed",
-          description: "Failed to transcribe the audio. Please try again.",
+          title: "Transcription complete",
+          description: "Your audio file has been successfully transcribed.",
         });
       }
     } catch (error) {
       setProcessingProgress(0);
-      console.error('Error during transcription:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to process the audio. Please try again.",
+        description: "Failed to process the audio file. Please try again.",
       });
     }
-  };
-
-  const checkTranscriptionStatus = async (transcriptId: string) => {
-    let attempts = 0;
-    const maxAttempts = 30; // Maximum number of polling attempts
-    
-    while (attempts < maxAttempts) {
-      const response = await fetch(`https://api.assemblyai.com/v2/transcript/${transcriptId}`, {
-        headers: {
-          'Authorization': ASSEMBLY_AI_API_KEY,
-        },
-      });
-      
-      const result = await response.json();
-      
-      if (result.status === 'completed' || result.status === 'error') {
-        return result;
-      }
-      
-      // Wait for 1 second before next polling attempt
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      attempts++;
-    }
-    
-    throw new Error('Transcription timed out');
   };
 
   const toggleRecording = async () => {
@@ -147,7 +100,7 @@ const Index = () => {
           await uploadAudioToAssemblyAI(blob);
         };
 
-        mediaRecorder.start(1000); // Collect data every second
+        mediaRecorder.start(1000);
         setHasPermission(true);
         setIsRecording(true);
         toast({
@@ -175,16 +128,21 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background transition-colors duration-300 animate-fade-in">
+    <div className="min-h-screen bg-background transition-colors duration-300 animate-fade-in relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 animate-gradient" />
+      
       <ThemeToggle />
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto relative z-10">
         <div className="text-center mb-8 animate-slide-in-right">
           <h1 className="text-4xl font-bold text-foreground mb-2">LiveTranscript+</h1>
           <p className="text-lg text-muted-foreground">Real-time audio transcription made beautiful</p>
         </div>
 
-        <div className="bg-card rounded-xl shadow-lg p-6 mb-8 animate-scale-in">
-          {isRecording && <AudioWaveform />}
+        <div className="bg-card/80 backdrop-blur-sm rounded-xl shadow-lg p-6 mb-8 animate-scale-in">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {isRecording && <AudioWaveform />}
+            <FileUpload onFileSelected={handleFileUpload} />
+          </div>
           
           {processingProgress > 0 && processingProgress < 100 && (
             <div className="my-4 animate-fade-in">
