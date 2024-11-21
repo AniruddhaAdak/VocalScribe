@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { MessageSquare, Edit2, Trash2, Reply } from "lucide-react";
 
@@ -16,6 +16,28 @@ const Comments = () => {
   const [editText, setEditText] = useState('');
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
+  const [inputColor, setInputColor] = useState('border-blue-500');
+
+  useEffect(() => {
+    const colors = [
+      'border-blue-500',
+      'border-green-500',
+      'border-purple-500',
+      'border-pink-500',
+      'border-yellow-500',
+      'border-red-500',
+      'border-indigo-500',
+      'border-orange-500'
+    ];
+    let colorIndex = 0;
+
+    const interval = setInterval(() => {
+      colorIndex = (colorIndex + 1) % colors.length;
+      setInputColor(colors[colorIndex]);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const addComment = () => {
     if (!newComment.trim()) return;
@@ -74,7 +96,7 @@ const Comments = () => {
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           placeholder="Add a comment..."
-          className="flex-1 p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
+          className={`flex-1 p-2 rounded border-2 ${inputColor} focus:outline-none focus:ring-2 focus:ring-primary transition-colors duration-300`}
         />
         <Button onClick={addComment} className="hover:scale-105 transition-transform">
           <MessageSquare className="w-4 h-4 mr-2" />

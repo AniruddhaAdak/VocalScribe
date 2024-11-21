@@ -1,4 +1,4 @@
-import { Copy, Download, Share2, MessageSquare, Edit2, Trash2 } from "lucide-react";
+import { Copy, Download, Share2, Edit2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import {
@@ -54,7 +54,7 @@ const TranscriptActions = ({ transcript, onEdit, onDelete }: TranscriptActionsPr
     <div className="flex gap-2 mt-4 animate-fade-in">
       <Button
         onClick={copyToClipboard}
-        className="hover:scale-105 transition-transform font-['Space_Grotesk'] hover:animate-[shake_0.5s_ease-in-out]"
+        className="hover:scale-105 transition-transform font-['Space_Grotesk'] hover:animate-[shake_0.5s_ease-in-out] bg-blue-500 hover:bg-blue-600"
         variant="outline"
       >
         <Copy className="w-4 h-4 mr-2" />
@@ -63,7 +63,7 @@ const TranscriptActions = ({ transcript, onEdit, onDelete }: TranscriptActionsPr
       
       <Button
         onClick={downloadTranscript}
-        className="hover:scale-105 transition-transform font-['Quicksand'] hover:animate-[shake_0.5s_ease-in-out]"
+        className="hover:scale-105 transition-transform font-['Quicksand'] hover:animate-[shake_0.5s_ease-in-out] bg-green-500 hover:bg-green-600"
         variant="outline"
       >
         <Download className="w-4 h-4 mr-2" />
@@ -73,7 +73,7 @@ const TranscriptActions = ({ transcript, onEdit, onDelete }: TranscriptActionsPr
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
-            className="hover:scale-105 transition-transform font-['Poppins'] hover:animate-[shake_0.5s_ease-in-out]"
+            className="hover:scale-105 transition-transform font-['Poppins'] hover:animate-[shake_0.5s_ease-in-out] bg-purple-500 hover:bg-purple-600"
             variant="outline"
           >
             <Share2 className="w-4 h-4 mr-2" />
@@ -95,7 +95,7 @@ const TranscriptActions = ({ transcript, onEdit, onDelete }: TranscriptActionsPr
 
       <Button
         onClick={onEdit}
-        className="hover:scale-105 transition-transform font-['Righteous'] hover:animate-[shake_0.5s_ease-in-out]"
+        className="hover:scale-105 transition-transform font-['Righteous'] hover:animate-[shake_0.5s_ease-in-out] bg-amber-500 hover:bg-amber-600"
         variant="outline"
       >
         <Edit2 className="w-4 h-4 mr-2" />
@@ -104,7 +104,7 @@ const TranscriptActions = ({ transcript, onEdit, onDelete }: TranscriptActionsPr
 
       <Button
         onClick={onDelete}
-        className="hover:scale-105 transition-transform font-['Space_Grotesk'] hover:animate-[shake_0.5s_ease-in-out]"
+        className="hover:scale-105 transition-transform font-['Space_Grotesk'] hover:animate-[shake_0.5s_ease-in-out] bg-red-500 hover:bg-red-600"
         variant="destructive"
       >
         <Trash2 className="w-4 h-4 mr-2" />
